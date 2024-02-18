@@ -2,18 +2,53 @@
   <mat-card class="main-container">
     <div class="row-container">
       <img src="pizza.png" alt="pizza" class="pizza-pic">
-      <mat-card-title class="page-title" style="word-break: break-all">TARNEPITSA</mat-card-title>
+      <mat-card-title class="page-title">TARNEPITSA</mat-card-title>
       <img src="pizza.png" alt="pizza" class="pizza-pic">
     </div>
     <div class="next-event-container">
-      <mat-card class="table-card next-event-card">
-        <mat-card-title class="generic-title" style="word-break: break-all">Järgmine üritus</mat-card-title>
-      </mat-card>
+      <div class="next-event-table-container">
+        <mat-card class="table-card next-event-card">
+          <mat-card-title class="generic-title">Järgmine üritus</mat-card-title>
+          <table mat-table [dataSource]="nextEvent">
+            <ng-container matColumnDef="type">
+              <th mat-header-cell *matHeaderCellDef> SÜNDMUSE TÜÜP</th>
+              <td mat-cell *matCellDef="let delivery"> {{delivery.type | eventType}} </td>
+            </ng-container>
+
+            <ng-container matColumnDef="date">
+              <th mat-header-cell *matHeaderCellDef> KUUPÄEV</th>
+              <td mat-cell *matCellDef="let delivery"> {{delivery.date | date}} </td>
+            </ng-container>
+
+            <ng-container matColumnDef="restaurant">
+              <th mat-header-cell *matHeaderCellDef> SÖÖGIKOHT</th>
+              <td mat-cell *matCellDef="let delivery"> {{delivery.restaurant}} </td>
+            </ng-container>
+
+            <ng-container matColumnDef="deliverer">
+              <th mat-header-cell *matHeaderCellDef> DELIVERY MANAGER</th>
+              <td mat-cell *matCellDef="let delivery"> {{getNameOfDeliverer(delivery.delivererId)}} </td>
+            </ng-container>
+
+            <tr mat-header-row *matHeaderRowDef="deliveryColumnsToDisplay"></tr>
+            <tr mat-row *matRowDef="let deliverer; columns: deliveryColumnsToDisplay"></tr>
+          </table>
+        </mat-card>
+      </div>
+      <div class="random-wheel">
+        <mat-card class="table-card">
+          <mat-card-title class="generic-title">Loosiratas</mat-card-title>
+          <div class="row-container">
+            <button mat-raised-button color="primary" class="next-deliverer-item" (click)="getNextDeliverer()">Loosi järgmine korraldaja</button>
+            <strong *ngIf="nextDeliverer" class="next-deliverer-item">{{nextDeliverer.name}}</strong>
+          </div>
+        </mat-card>
+      </div>
     </div>
     <div class="main-data-container">
-      <div class="deliverers">
+      <div class="past-events-table-container">
         <mat-card class="table-card">
-          <mat-card-title class="generic-title" style="word-break: break-all">Toimunud üritused</mat-card-title>
+          <mat-card-title class="generic-title">Toimunud üritused</mat-card-title>
           <table mat-table [dataSource]="deliveries">
             <ng-container matColumnDef="type">
               <th mat-header-cell *matHeaderCellDef> SÜNDMUSE TÜÜP</th>
@@ -40,10 +75,10 @@
           </table>
         </mat-card>
       </div>
-      <div class="deliveries">
+      <div class="deliverers-table-container">
         <mat-card class="table-card">
-          <mat-card-title class="generic-title" style="word-break: break-all">Korraldajad</mat-card-title>
-          <table mat-table [dataSource]="deliverers" bgcolor="primary">
+          <mat-card-title class="generic-title">Korraldajad</mat-card-title>
+          <table mat-table [dataSource]="deliverers">
             <ng-container matColumnDef="name">
               <th mat-header-cell *matHeaderCellDef> NIMI</th>
               <td mat-cell *matCellDef="let deliverer"> {{deliverer.name}} </td>

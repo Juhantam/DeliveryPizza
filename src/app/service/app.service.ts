@@ -48,4 +48,12 @@ export class AppService {
         return deliveries;
       }))
   }
+
+  getNextEvent(): Observable<Delivery> {
+    return this.http.get<Delivery>(`${this.url}/next-event.json`);
+  }
+
+  updateNextEvent(event: Delivery): Observable<any> {
+    return this.http.put(`${this.url}/next-event.json`, event);
+  }
 }
