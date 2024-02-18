@@ -1,4 +1,4 @@
-import {HttpClientModule} from "@angular/common/http";
+import {HTTP_INTERCEPTORS, HttpClientModule} from "@angular/common/http";
 import {NgModule} from "@angular/core";
 import {FormsModule} from "@angular/forms";
 import {MatButtonModule} from "@angular/material/button";
@@ -8,6 +8,7 @@ import {BrowserModule} from "@angular/platform-browser";
 import {BrowserAnimationsModule} from "@angular/platform-browser/animations";
 import {provideAnimationsAsync} from '@angular/platform-browser/animations/async';
 import {AppComponent} from "./app.component";
+import {AuthInterceptorService} from "./interceptor/auth-interceptor.service";
 import {EventTypePipe} from "./pipe/event-type.pipe";
 import {YesNoPipe} from "./pipe/yes-no.pipe";
 
@@ -27,9 +28,15 @@ import {YesNoPipe} from "./pipe/yes-no.pipe";
     MatButtonModule
   ],
   providers: [
-    provideAnimationsAsync()
+    provideAnimationsAsync(),
+    {
+      provide: HTTP_INTERCEPTORS,
+      useClass: AuthInterceptorService,
+      multi: true
+    }
   ],
   bootstrap: [AppComponent]
 })
 
-export class AppModule {}
+export class AppModule {
+}
