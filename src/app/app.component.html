@@ -38,7 +38,7 @@
       <div class="random-wheel">
         <mat-card class="table-card">
           <mat-card-title class="generic-title">Loosiratas</mat-card-title>
-          <div class="row-container">
+          <div class="row-container randomizer-container">
             <button mat-raised-button color="primary" class="next-deliverer-item" (click)="getNextDeliverer()">Loosi järgmine korraldaja</button>
             <strong *ngIf="nextDeliverer" class="next-deliverer-item">{{nextDeliverer.name}}</strong>
           </div>
@@ -52,7 +52,8 @@
           <table mat-table [dataSource]="deliveries">
             <ng-container matColumnDef="type">
               <th mat-header-cell *matHeaderCellDef> SÜNDMUSE TÜÜP</th>
-              <td mat-cell *matCellDef="let delivery"> {{delivery.type | eventType}} </td>
+              <td mat-cell *matCellDef="let delivery" [class.paint-delivery-pizza]='isDeliveryPizza(delivery)'
+                  [class.paint-team-lunch]='!isDeliveryPizza(delivery)'> {{delivery.type | eventType}} </td>
             </ng-container>
 
             <ng-container matColumnDef="date">

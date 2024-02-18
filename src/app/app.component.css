@@ -70,6 +70,10 @@ strong {
   margin-right: 3rem;
 }
 
+.randomizer-container {
+  margin-top: 2rem;
+}
+
 .past-events-table-container {
   width: 50%;
   margin-left: 3rem;
@@ -130,6 +134,14 @@ table {
 
 .paint-red {
   color: #e06c75;
+}
+
+.paint-delivery-pizza {
+  color: orange;
+}
+
+.paint-team-lunch {
+  color: aquamarine;
 }
 
 @keyframes rotate-title {
