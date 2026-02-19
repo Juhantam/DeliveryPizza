@@ -35,23 +35,22 @@ export class SpinWheelComponent implements AfterViewInit, OnChanges {
     this.isSpinning = true;
 
     const segmentAngle = (2 * Math.PI) / this.segments.length;
-    // The pointer is at the top (12 o'clock = -PI/2 in canvas coords).
-    // We want the center of the winner segment to align with the pointer.
-    // Segment i spans from i*segmentAngle to (i+1)*segmentAngle (before rotation).
-    // The center of segment i is at (i + 0.5) * segmentAngle.
-    // After rotation R, the point at angle A appears at angle (A + R).
-    // We want (winnerIndex + 0.5) * segmentAngle + R ≡ -PI/2 (mod 2PI)
-    // But we draw from the top going clockwise, so pointer at top means angle = -PI/2.
-    // Target: R = -PI/2 - (winnerIndex + 0.5) * segmentAngle
-    const targetAngleOnWheel = (winnerIndex + 0.5) * segmentAngle;
-    const pointerAngle = -Math.PI / 2;
-    let targetRotation = pointerAngle - targetAngleOnWheel;
+    const TWO_PI = 2 * Math.PI;
 
-    // Normalize to positive and add full rotations for dramatic effect
-    const fullRotations = (5 + Math.random() * 3) * 2 * Math.PI;
-    targetRotation = targetRotation - Math.floor(targetRotation / (2 * Math.PI)) * (2 * Math.PI);
-    const totalRotation = this.currentRotation + fullRotations + targetRotation -
-      (this.currentRotation % (2 * Math.PI));
+    // Pointer is at the top (-PI/2 in canvas coords).
+    // Segment i center is drawn at: rotation + (i + 0.5) * segmentAngle
+    // We need: rotation + (winnerIndex + 0.5) * segmentAngle ≡ -PI/2 (mod 2PI)
+    // So: rotation ≡ -PI/2 - (winnerIndex + 0.5) * segmentAngle (mod 2PI)
+    const targetMod = ((-Math.PI / 2 - (winnerIndex + 0.5) * segmentAngle) % TWO_PI + TWO_PI) % TWO_PI;
+    const currentMod = ((this.currentRotation % TWO_PI) + TWO_PI) % TWO_PI;
+
+    // How much further we need to rotate to reach the target angle
+    let remaining = targetMod - currentMod;
+    if (remaining < 0) remaining += TWO_PI;
+
+    // Add full rotations for dramatic spin effect
+    const fullRotations = (5 + Math.floor(Math.random() * 3)) * TWO_PI;
+    const totalRotation = this.currentRotation + fullRotations + remaining;
 
     const startRotation = this.currentRotation;
     const rotationDelta = totalRotation - startRotation;
