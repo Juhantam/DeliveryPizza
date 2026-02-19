@@ -1,5 +1,19 @@
 <main class="main">
   <mat-card class="main-container">
+    <div class="auth-container">
+      <button mat-raised-button [color]="authService.isAuthenticated ? 'warn' : 'accent'"
+              (click)="onAuthButtonClick()">
+        {{ authService.isAuthenticated ? 'Logi välja' : 'Logi sisse' }}
+      </button>
+      <ng-container *ngIf="showLoginInput && !authService.isAuthenticated">
+        <input type="password" class="auth-password-input" placeholder="Parool"
+               [(ngModel)]="password" (keyup.enter)="onLogin()" />
+        <button mat-raised-button color="primary" (click)="onLogin()" [disabled]="isLoggingIn">
+          {{ isLoggingIn ? 'Sisenen...' : 'OK' }}
+        </button>
+        <span *ngIf="loginError" class="auth-error">{{ loginError }}</span>
+      </ng-container>
+    </div>
     <div class="row-container">
       <img src="pizza.png" alt="pizza" class="pizza-pic">
       <mat-card-title class="page-title">TARNEPITSA</mat-card-title>
@@ -39,7 +53,8 @@
         <mat-card class="table-card">
           <mat-card-title class="generic-title">Loosiratas</mat-card-title>
           <div class="row-container randomizer-container">
-            <button mat-raised-button color="primary" class="next-deliverer-item" (click)="getNextDeliverer()">Loosi järgmine korraldaja</button>
+            <button mat-raised-button color="primary" class="next-deliverer-item"
+                    (click)="getNextDeliverer()" [disabled]="!authService.isAuthenticated">Loosi järgmine korraldaja</button>
             <strong *ngIf="nextDeliverer" class="next-deliverer-item">{{nextDeliverer.name}}</strong>
           </div>
         </mat-card>

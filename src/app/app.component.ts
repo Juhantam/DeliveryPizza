@@ -6,6 +6,7 @@ import {Deliverer} from "./model/deliverer";
 import {Delivery} from "./model/delivery";
 import {EventType} from "./model/event-type";
 import {AppService} from "./service/app.service";
+import {AuthService} from "./service/auth.service";
 
 @Component({
   selector: 'app-root',
@@ -23,10 +24,15 @@ export class AppComponent implements OnInit, AfterViewInit, OnDestroy {
   nextEvent: Delivery[];
   nextDeliverer: Deliverer;
 
+  showLoginInput = false;
+  password = '';
+  loginError = '';
+  isLoggingIn = false;
+
   @ViewChild('deliveriesSort') deliveriesSort: MatSort;
   @ViewChild('deliverersSort') deliverersSort: MatSort;
 
-  constructor(private appService: AppService) {
+  constructor(private appService: AppService, public authService: AuthService) {
   }
 
   ngOnInit() {
@@ -60,6 +66,41 @@ export class AppComponent implements OnInit, AfterViewInit, OnDestroy {
     this.nextDeliverer = suitableDeliverers[randomNumber];
     this.nextEvent[0].delivererId = this.nextDeliverer.id;
     this.subscriptions.push(this.appService.updateNextEvent(this.nextEvent[0]).subscribe());
+  }
+
+  onAuthButtonClick(): void {
+    if (this.authService.isAuthenticated) {
+      this.authService.logout();
+      this.showLoginInput = false;
+    } else {
+      this.showLoginInput = !this.showLoginInput;
+      this.loginError = '';
+    }
+  }
+
+  onLogin(): void {
+    if (!this.password || this.isLoggingIn) return;
+
+    this.isLoggingIn = true;
+    this.loginError = '';
+
+    this.subscriptions.push(
+      this.authService.login(this.password).subscribe({
+        next: () => {
+          this.password = '';
+          this.isLoggingIn = false;
+          this.showLoginInput = false;
+        },
+        error: (err: Error) => {
+          this.isLoggingIn = false;
+          if (err.message.startsWith('TOO_MANY_ATTEMPTS')) {
+            this.loginError = 'Liiga palju katseid, proovi hiljem';
+          } else {
+            this.loginError = 'Vale parool';
+          }
+        }
+      })
+    );
   }
 
   isDeliveryPizza(delivery: Delivery): boolean {

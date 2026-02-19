@@ -1,3 +1,36 @@
+.auth-container {
+  display: flex;
+  flex-direction: row;
+  justify-content: flex-end;
+  align-items: center;
+  gap: 0.75rem;
+  padding: 0.5rem 1rem;
+}
+
+.auth-password-input {
+  padding: 0.5rem 1rem;
+  font-size: 1rem;
+  border: 1px solid rgba(255, 255, 255, 0.3);
+  border-radius: 4px;
+  background-color: rgba(255, 255, 255, 0.1);
+  color: rgba(255, 255, 255, 0.87);
+  outline: none;
+  width: 200px;
+}
+
+.auth-password-input::placeholder {
+  color: rgba(255, 255, 255, 0.5);
+}
+
+.auth-password-input:focus {
+  border-color: rgba(255, 255, 255, 0.6);
+}
+
+.auth-error {
+  color: #e06c75;
+  font-size: 0.9rem;
+}
+
 .main {
   margin: 3rem;
   width: 100%;
