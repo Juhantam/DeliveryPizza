@@ -19,8 +19,10 @@ import {AdminComponent} from "./admin/admin.component";
 import {AppComponent} from "./app.component";
 import {HomeComponent} from "./home/home.component";
 import {AuthInterceptorService} from "./interceptor/auth-interceptor.service";
+import {DelivererNamesPipe} from "./pipe/deliverer-names.pipe";
 import {EventTypePipe} from "./pipe/event-type.pipe";
 import {AuthService} from "./service/auth.service";
+import {SpinWheelComponent} from "./spin-wheel/spin-wheel.component";
 import {YesNoPipe} from "./pipe/yes-no.pipe";
 
 const routes: Routes = [
@@ -37,8 +39,10 @@ const routes: Routes = [
     AppComponent,
     HomeComponent,
     AdminComponent,
+    SpinWheelComponent,
     EventTypePipe,
-    YesNoPipe
+    YesNoPipe,
+    DelivererNamesPipe
   ],
   imports: [
     BrowserModule,

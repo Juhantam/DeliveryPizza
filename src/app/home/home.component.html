@@ -38,10 +38,17 @@
       <div class="random-wheel">
         <mat-card class="table-card">
           <mat-card-title class="generic-title">Loosiratas</mat-card-title>
-          <div class="row-container randomizer-container">
-            <button mat-raised-button color="primary" class="next-deliverer-item"
-                    (click)="getNextDeliverer()" [disabled]="!authService.isAuthenticated">Loosi järgmine korraldaja</button>
-            <strong *ngIf="nextDeliverer" class="next-deliverer-item">{{nextDeliverer.name}}</strong>
+          <div class="wheel-section">
+            <app-spin-wheel
+              [segments]="suitableDeliverers | delivererNames"
+              (spinComplete)="onSpinComplete($event)">
+            </app-spin-wheel>
+            <button mat-raised-button color="primary" class="spin-button"
+                    (click)="getNextDeliverer()"
+                    [disabled]="!authService.isAuthenticated || isSpinning || suitableDeliverers.length === 0">
+              Loosi järgmine korraldaja
+            </button>
+            <strong *ngIf="nextDeliverer" class="winner-name">{{nextDeliverer.name}}</strong>
           </div>
         </mat-card>
       </div>

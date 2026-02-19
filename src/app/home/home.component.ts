@@ -7,6 +7,7 @@ import {Delivery} from "../model/delivery";
 import {EventType} from "../model/event-type";
 import {AppService} from "../service/app.service";
 import {AuthService} from "../service/auth.service";
+import {SpinWheelComponent} from "../spin-wheel/spin-wheel.component";
 
 @Component({
   selector: 'app-home',
@@ -23,9 +24,12 @@ export class HomeComponent implements OnInit, AfterViewInit, OnDestroy {
   deliveriesDataSource = new MatTableDataSource<Delivery>();
   nextEvent: Delivery[];
   nextDeliverer: Deliverer;
+  suitableDeliverers: Deliverer[] = [];
+  isSpinning = false;
 
   @ViewChild('deliveriesSort') deliveriesSort: MatSort;
   @ViewChild('deliverersSort') deliverersSort: MatSort;
+  @ViewChild(SpinWheelComponent) spinWheel: SpinWheelComponent;
 
   constructor(private appService: AppService, public authService: AuthService) {
   }
@@ -34,6 +38,7 @@ export class HomeComponent implements OnInit, AfterViewInit, OnDestroy {
     this.subscriptions.push(this.appService.findAllDeliverers().subscribe(deliverers => {
       this.deliverersDataSource.data = deliverers
         .sort((a, b) => Number(b.isActive) - Number(a.isActive));
+      this.suitableDeliverers = deliverers.filter(d => d.isActive && !d.delivered);
     }));
     this.subscriptions.push(this.appService.findAllDelivieries().subscribe(deliveries => {
       this.deliveriesDataSource.data = deliveries
@@ -56,11 +61,17 @@ export class HomeComponent implements OnInit, AfterViewInit, OnDestroy {
   }
 
   getNextDeliverer() {
-    const suitableDeliverers = this.deliverersDataSource.data.filter(deliverer => deliverer.isActive && !deliverer.delivered);
-    const randomNumber = this.getRandomInt(suitableDeliverers.length);
-    this.nextDeliverer = suitableDeliverers[randomNumber];
+    if (this.suitableDeliverers.length === 0 || this.isSpinning) return;
+    this.isSpinning = true;
+    const winnerIndex = this.getRandomInt(this.suitableDeliverers.length);
+    this.spinWheel.spin(winnerIndex);
+  }
+
+  onSpinComplete(winnerIndex: number) {
+    this.nextDeliverer = this.suitableDeliverers[winnerIndex];
     this.nextEvent[0].delivererId = this.nextDeliverer.id;
     this.subscriptions.push(this.appService.updateNextEvent(this.nextEvent[0]).subscribe());
+    this.isSpinning = false;
   }
 
   editingDelivererId: string | null = null;
