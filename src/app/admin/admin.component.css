@@ -21,7 +21,8 @@
 }
 
 .admin-content {
-  width: 60%;
+  width: 80%;
+  margin: 3rem;
   display: flex;
   flex-direction: column;
   gap: 2rem;
