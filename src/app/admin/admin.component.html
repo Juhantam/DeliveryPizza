@@ -1,0 +1,90 @@
+<div class="admin">
+  <div class="admin-content">
+    <mat-card class="admin-card">
+      <mat-card-title class="admin-title">Lisa üritus</mat-card-title>
+      <div class="form-container">
+        <mat-form-field>
+          <mat-label>Sündmuse tüüp</mat-label>
+          <mat-select [(ngModel)]="eventType">
+            <mat-option *ngFor="let type of eventTypes" [value]="type.value">{{ type.label }}</mat-option>
+          </mat-select>
+        </mat-form-field>
+
+        <mat-form-field>
+          <mat-label>Söögikoht</mat-label>
+          <input matInput [(ngModel)]="eventRestaurant" />
+        </mat-form-field>
+
+        <mat-form-field>
+          <mat-label>Kuupäev</mat-label>
+          <input matInput [matDatepicker]="eventPicker" [(ngModel)]="eventDate" />
+          <mat-datepicker-toggle matIconSuffix [for]="eventPicker"></mat-datepicker-toggle>
+          <mat-datepicker #eventPicker></mat-datepicker>
+        </mat-form-field>
+
+        <mat-form-field>
+          <mat-label>Korraldaja</mat-label>
+          <mat-select [(ngModel)]="eventDelivererId">
+            <mat-option *ngFor="let deliverer of deliverers" [value]="deliverer.id">{{ deliverer.name }}</mat-option>
+          </mat-select>
+        </mat-form-field>
+
+        <button mat-raised-button color="primary" (click)="onAddEvent()"
+                [disabled]="!eventRestaurant || !eventDate || !eventDelivererId">Lisa</button>
+        <span *ngIf="eventSuccess" class="success-msg">{{ eventSuccess }}</span>
+        <span *ngIf="eventError" class="error-msg">{{ eventError }}</span>
+      </div>
+    </mat-card>
+
+    <mat-card class="admin-card">
+      <mat-card-title class="admin-title">Sisesta järgmine üritus</mat-card-title>
+      <div class="form-container">
+        <mat-form-field>
+          <mat-label>Sündmuse tüüp</mat-label>
+          <mat-select [(ngModel)]="nextEventType">
+            <mat-option *ngFor="let type of eventTypes" [value]="type.value">{{ type.label }}</mat-option>
+          </mat-select>
+        </mat-form-field>
+
+        <mat-form-field>
+          <mat-label>Söögikoht</mat-label>
+          <input matInput [(ngModel)]="nextEventRestaurant" />
+        </mat-form-field>
+
+        <mat-form-field>
+          <mat-label>Kuupäev</mat-label>
+          <input matInput [matDatepicker]="nextEventPicker" [(ngModel)]="nextEventDate" />
+          <mat-datepicker-toggle matIconSuffix [for]="nextEventPicker"></mat-datepicker-toggle>
+          <mat-datepicker #nextEventPicker></mat-datepicker>
+        </mat-form-field>
+
+        <mat-form-field>
+          <mat-label>Korraldaja</mat-label>
+          <mat-select [(ngModel)]="nextEventDelivererId">
+            <mat-option *ngFor="let deliverer of deliverers" [value]="deliverer.id">{{ deliverer.name }}</mat-option>
+          </mat-select>
+        </mat-form-field>
+
+        <button mat-raised-button color="primary" (click)="onSetNextEvent()"
+                [disabled]="!nextEventRestaurant || !nextEventDate">Määra</button>
+        <span *ngIf="nextEventSuccess" class="success-msg">{{ nextEventSuccess }}</span>
+        <span *ngIf="nextEventError" class="error-msg">{{ nextEventError }}</span>
+      </div>
+    </mat-card>
+
+    <mat-card class="admin-card">
+      <mat-card-title class="admin-title">Lisa korraldaja</mat-card-title>
+      <div class="form-container">
+        <mat-form-field>
+          <mat-label>Nimi</mat-label>
+          <input matInput [(ngModel)]="delivererName" />
+        </mat-form-field>
+
+        <button mat-raised-button color="primary" (click)="onAddDeliverer()"
+                [disabled]="!delivererName">Lisa</button>
+        <span *ngIf="delivererSuccess" class="success-msg">{{ delivererSuccess }}</span>
+        <span *ngIf="delivererError" class="error-msg">{{ delivererError }}</span>
+      </div>
+    </mat-card>
+  </div>
+</div>

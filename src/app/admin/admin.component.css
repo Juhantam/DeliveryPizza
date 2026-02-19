@@ -1,0 +1,56 @@
+.admin {
+  padding: 3rem;
+  display: flex;
+  justify-content: center;
+}
+
+.auth-warning {
+  width: 100%;
+  display: flex;
+  justify-content: center;
+}
+
+.warning-card {
+  padding: 2rem;
+  border: 1px solid rgba(255, 255, 255, 0.12);
+}
+
+.warning-title {
+  color: rgba(255, 255, 255, 0.87);
+  font-size: 1.5rem;
+}
+
+.admin-content {
+  width: 60%;
+  display: flex;
+  flex-direction: column;
+  gap: 2rem;
+}
+
+.admin-card {
+  padding: 1.5rem;
+  border: 1px solid rgba(255, 255, 255, 0.12);
+}
+
+.admin-title {
+  color: rgba(255, 255, 255, 0.87);
+  font-size: 2rem;
+  margin-bottom: 1rem;
+}
+
+.form-container {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  max-width: 400px;
+}
+
+.success-msg {
+  color: #98c379;
+  font-size: 0.9rem;
+}
+
+.error-msg {
+  color: #e06c75;
+  font-size: 0.9rem;
+}

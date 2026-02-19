@@ -1,122 +1,23 @@
-<main class="main">
-  <mat-card class="main-container">
-    <div class="auth-container">
-      <button mat-raised-button [color]="authService.isAuthenticated ? 'warn' : 'accent'"
-              (click)="onAuthButtonClick()">
-        {{ authService.isAuthenticated ? 'Logi välja' : 'Logi sisse' }}
+<div class="nav-bar">
+  <div class="nav-tabs">
+    <a mat-button routerLink="/" routerLinkActive="active-tab" [routerLinkActiveOptions]="{exact: true}">Avaleht</a>
+    <a mat-button routerLink="/admin" routerLinkActive="active-tab" *ngIf="authService.isAuthenticated">Admin</a>
+  </div>
+  <div class="auth-container">
+    <ng-container *ngIf="showLoginInput && !authService.isAuthenticated">
+      <span *ngIf="loginError" class="auth-error">{{ loginError }}</span>
+      <input type="password" class="auth-password-input" placeholder="Parool"
+             [(ngModel)]="password" (keyup.enter)="onLogin()" />
+      <button mat-raised-button color="primary" (click)="onLogin()" [disabled]="isLoggingIn">
+        {{ isLoggingIn ? 'Sisenen...' : 'OK' }}
       </button>
-      <ng-container *ngIf="showLoginInput && !authService.isAuthenticated">
-        <input type="password" class="auth-password-input" placeholder="Parool"
-               [(ngModel)]="password" (keyup.enter)="onLogin()" />
-        <button mat-raised-button color="primary" (click)="onLogin()" [disabled]="isLoggingIn">
-          {{ isLoggingIn ? 'Sisenen...' : 'OK' }}
-        </button>
-        <span *ngIf="loginError" class="auth-error">{{ loginError }}</span>
-      </ng-container>
-    </div>
-    <div class="row-container">
-      <img src="pizza.png" alt="pizza" class="pizza-pic">
-      <mat-card-title class="page-title">TARNEPITSA</mat-card-title>
-      <img src="pizza.png" alt="pizza" class="pizza-pic">
-    </div>
-    <div class="next-event-container">
-      <div class="next-event-table-container">
-        <mat-card class="table-card next-event-card">
-          <mat-card-title class="generic-title">Järgmine üritus</mat-card-title>
-          <table mat-table [dataSource]="nextEvent">
-            <ng-container matColumnDef="type">
-              <th mat-header-cell *matHeaderCellDef> SÜNDMUSE TÜÜP</th>
-              <td mat-cell *matCellDef="let delivery"> {{delivery.type | eventType}} </td>
-            </ng-container>
-
-            <ng-container matColumnDef="date">
-              <th mat-header-cell *matHeaderCellDef> KUUPÄEV</th>
-              <td mat-cell *matCellDef="let delivery"> {{delivery.date | date}} </td>
-            </ng-container>
-
-            <ng-container matColumnDef="restaurant">
-              <th mat-header-cell *matHeaderCellDef> SÖÖGIKOHT</th>
-              <td mat-cell *matCellDef="let delivery"> {{delivery.restaurant}} </td>
-            </ng-container>
-
-            <ng-container matColumnDef="deliverer">
-              <th mat-header-cell *matHeaderCellDef> DELIVERY MANAGER</th>
-              <td mat-cell *matCellDef="let delivery"> {{getNameOfDeliverer(delivery.delivererId)}} </td>
-            </ng-container>
-
-            <tr mat-header-row *matHeaderRowDef="deliveryColumnsToDisplay"></tr>
-            <tr mat-row *matRowDef="let deliverer; columns: deliveryColumnsToDisplay"></tr>
-          </table>
-        </mat-card>
-      </div>
-      <div class="random-wheel">
-        <mat-card class="table-card">
-          <mat-card-title class="generic-title">Loosiratas</mat-card-title>
-          <div class="row-container randomizer-container">
-            <button mat-raised-button color="primary" class="next-deliverer-item"
-                    (click)="getNextDeliverer()" [disabled]="!authService.isAuthenticated">Loosi järgmine korraldaja</button>
-            <strong *ngIf="nextDeliverer" class="next-deliverer-item">{{nextDeliverer.name}}</strong>
-          </div>
-        </mat-card>
-      </div>
-    </div>
-    <div class="main-data-container">
-      <div class="past-events-table-container">
-        <mat-card class="table-card">
-          <mat-card-title class="generic-title">Toimunud üritused</mat-card-title>
-          <table mat-table [dataSource]="deliveriesDataSource" matSort #deliveriesSort="matSort" matSortActive="date" matSortDirection="desc">
-            <ng-container matColumnDef="type">
-              <th mat-header-cell *matHeaderCellDef mat-sort-header> SÜNDMUSE TÜÜP</th>
-              <td mat-cell *matCellDef="let delivery" [class.paint-delivery-pizza]='isDeliveryPizza(delivery)'
-                  [class.paint-team-lunch]='!isDeliveryPizza(delivery)'> {{delivery.type | eventType}} </td>
-            </ng-container>
-
-            <ng-container matColumnDef="date">
-              <th mat-header-cell *matHeaderCellDef mat-sort-header> KUUPÄEV</th>
-              <td mat-cell *matCellDef="let delivery"> {{delivery.date | date}} </td>
-            </ng-container>
-
-            <ng-container matColumnDef="restaurant">
-              <th mat-header-cell *matHeaderCellDef mat-sort-header> SÖÖGIKOHT</th>
-              <td mat-cell *matCellDef="let delivery"> {{delivery.restaurant}} </td>
-            </ng-container>
-
-            <ng-container matColumnDef="deliverer">
-              <th mat-header-cell *matHeaderCellDef> DELIVERY MANAGER</th>
-              <td mat-cell *matCellDef="let delivery"> {{getNameOfDeliverer(delivery.delivererId)}} </td>
-            </ng-container>
-
-            <tr mat-header-row *matHeaderRowDef="deliveryColumnsToDisplay"></tr>
-            <tr mat-row *matRowDef="let deliverer; columns: deliveryColumnsToDisplay"></tr>
-          </table>
-        </mat-card>
-      </div>
-      <div class="deliverers-table-container">
-        <mat-card class="table-card">
-          <mat-card-title class="generic-title">Korraldajad</mat-card-title>
-          <table mat-table [dataSource]="deliverersDataSource" matSort #deliverersSort="matSort" matSortActive="isActive" matSortDirection="desc">
-            <ng-container matColumnDef="name">
-              <th mat-header-cell *matHeaderCellDef mat-sort-header> NIMI</th>
-              <td mat-cell *matCellDef="let deliverer"> {{deliverer.name}} </td>
-            </ng-container>
-
-            <ng-container matColumnDef="delivered">
-              <th mat-header-cell *matHeaderCellDef mat-sort-header> ON OLNUD DELIVERY MANAGER</th>
-              <td mat-cell *matCellDef="let deliverer" [class.paint-green]='deliverer.delivered'
-                  [class.paint-red]='!deliverer.delivered'> {{deliverer.delivered | yesNo}} </td>
-            </ng-container>
-
-            <ng-container matColumnDef="isActive">
-              <th mat-header-cell *matHeaderCellDef mat-sort-header> ON AKTIIVNE</th>
-              <td mat-cell *matCellDef="let deliverer" [class.paint-green]='deliverer.isActive'
-                  [class.paint-red]='!deliverer.isActive'> {{deliverer.isActive | yesNo}} </td>
-            </ng-container>
-
-            <tr mat-header-row *matHeaderRowDef="delivererColumnsToDisplay"></tr>
-            <tr mat-row *matRowDef="let deliverer; columns: delivererColumnsToDisplay"></tr>
-          </table>
-        </mat-card>
-      </div>
-    </div>
-  </mat-card>
-</main>
+    </ng-container>
+    <button mat-raised-button [color]="authService.isAuthenticated ? 'warn' : 'accent'"
+            (click)="onAuthButtonClick()">
+      {{ authService.isAuthenticated ? 'Logi välja' : 'Logi sisse' }}
+    </button>
+  </div>
+</div>
+<div class="page-content">
+  <router-outlet></router-outlet>
+</div>

@@ -56,4 +56,12 @@ export class AppService {
   updateNextEvent(event: Delivery): Observable<any> {
     return this.http.put(`${this.url}/next-event.json`, event);
   }
+
+  createDelivery(delivery: {type: string, restaurant: string, date: string, delivererId: string}): Observable<any> {
+    return this.http.post(`${this.url}/delivery.json`, delivery);
+  }
+
+  createDeliverer(deliverer: {name: string, delivered: boolean, isActive: boolean}): Observable<any> {
+    return this.http.post(`${this.url}/deliverers.json`, deliverer);
+  }
 }

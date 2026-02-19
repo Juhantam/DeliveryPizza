@@ -1,21 +1,41 @@
 import {HTTP_INTERCEPTORS, HttpClientModule} from "@angular/common/http";
-import {NgModule} from "@angular/core";
+import {inject, NgModule} from "@angular/core";
 import {FormsModule} from "@angular/forms";
 import {MatButtonModule} from "@angular/material/button";
 import {MatCardModule} from "@angular/material/card";
+import {MatDatepickerModule} from "@angular/material/datepicker";
+import {MatNativeDateModule} from "@angular/material/core";
+import {MatFormFieldModule} from "@angular/material/form-field";
+import {MatInputModule} from "@angular/material/input";
+import {MatSelectModule} from "@angular/material/select";
 import {MatSortModule} from "@angular/material/sort";
 import {MatTableModule} from "@angular/material/table";
 import {BrowserModule} from "@angular/platform-browser";
 import {BrowserAnimationsModule} from "@angular/platform-browser/animations";
 import {provideAnimationsAsync} from '@angular/platform-browser/animations/async';
+import {Router, RouterModule, Routes} from "@angular/router";
+import {AdminComponent} from "./admin/admin.component";
 import {AppComponent} from "./app.component";
+import {HomeComponent} from "./home/home.component";
 import {AuthInterceptorService} from "./interceptor/auth-interceptor.service";
 import {EventTypePipe} from "./pipe/event-type.pipe";
+import {AuthService} from "./service/auth.service";
 import {YesNoPipe} from "./pipe/yes-no.pipe";
+
+const routes: Routes = [
+  {path: '', component: HomeComponent},
+  {path: 'admin', component: AdminComponent, canActivate: [() => {
+    const authService = inject(AuthService);
+    const router = inject(Router);
+    return authService.isAuthenticated || router.createUrlTree(['/']);
+  }]}
+];
 
 @NgModule({
   declarations: [
     AppComponent,
+    HomeComponent,
+    AdminComponent,
     EventTypePipe,
     YesNoPipe
   ],
@@ -24,10 +44,16 @@ import {YesNoPipe} from "./pipe/yes-no.pipe";
     FormsModule,
     HttpClientModule,
     BrowserAnimationsModule,
+    RouterModule.forRoot(routes),
     MatCardModule,
+    MatDatepickerModule,
+    MatNativeDateModule,
     MatSortModule,
     MatTableModule,
-    MatButtonModule
+    MatButtonModule,
+    MatFormFieldModule,
+    MatInputModule,
+    MatSelectModule
   ],
   providers: [
     provideAnimationsAsync(),
