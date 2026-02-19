@@ -1,4 +1,6 @@
-import {Component, OnDestroy, OnInit} from '@angular/core';
+import {Component, OnDestroy, OnInit, ViewChild, AfterViewInit, ViewChildren, QueryList} from '@angular/core';
+import {MatSort} from "@angular/material/sort";
+import {MatTableDataSource} from "@angular/material/table";
 import {Subscription} from "rxjs";
 import {Deliverer} from "./model/deliverer";
 import {Delivery} from "./model/delivery";
@@ -10,25 +12,38 @@ import {AppService} from "./service/app.service";
   templateUrl: './app.component.html',
   styleUrl: './app.component.css'
 })
-export class AppComponent implements OnInit, OnDestroy {
+export class AppComponent implements OnInit, AfterViewInit, OnDestroy {
   delivererColumnsToDisplay: string[] = ['name', 'delivered', 'isActive'];
   deliveryColumnsToDisplay: string[] = ['type', 'date', 'restaurant', 'deliverer'];
 
   subscriptions: Subscription[] = [];
 
-  deliverers: Deliverer[]
-  deliveries: Delivery[]
+  deliverersDataSource = new MatTableDataSource<Deliverer>();
+  deliveriesDataSource = new MatTableDataSource<Delivery>();
   nextEvent: Delivery[];
   nextDeliverer: Deliverer;
+
+  @ViewChild('deliveriesSort') deliveriesSort: MatSort;
+  @ViewChild('deliverersSort') deliverersSort: MatSort;
 
   constructor(private appService: AppService) {
   }
 
   ngOnInit() {
-    this.subscriptions.push(this.appService.findAllDeliverers().subscribe(deliverers => this.deliverers = deliverers));
-    this.subscriptions.push(this.appService.findAllDelivieries().subscribe(deliveries => this.deliveries = deliveries
-      .sort((delivery1, delivery2) => delivery1.date?.getTime() - delivery2.date?.getTime())));
+    this.subscriptions.push(this.appService.findAllDeliverers().subscribe(deliverers => {
+      this.deliverersDataSource.data = deliverers
+        .sort((a, b) => Number(b.isActive) - Number(a.isActive));
+    }));
+    this.subscriptions.push(this.appService.findAllDelivieries().subscribe(deliveries => {
+      this.deliveriesDataSource.data = deliveries
+        .sort((delivery1, delivery2) => delivery2.date?.getTime() - delivery1.date?.getTime());
+    }));
     this.subscriptions.push(this.appService.getNextEvent().subscribe(event => this.nextEvent = [event]));
+  }
+
+  ngAfterViewInit() {
+    this.deliveriesDataSource.sort = this.deliveriesSort;
+    this.deliverersDataSource.sort = this.deliverersSort;
   }
 
   ngOnDestroy() {
@@ -36,11 +51,11 @@ export class AppComponent implements OnInit, OnDestroy {
   }
 
   getNameOfDeliverer(delivererId: string): string {
-    return this.deliverers?.find(deliverer => deliverer.id === delivererId)?.name ?? 'Teadmata';
+    return this.deliverersDataSource.data?.find(deliverer => deliverer.id === delivererId)?.name ?? 'Teadmata';
   }
 
   getNextDeliverer() {
-    const suitableDeliverers = this.deliverers.filter(deliverer => deliverer.isActive && !deliverer.delivered);
+    const suitableDeliverers = this.deliverersDataSource.data.filter(deliverer => deliverer.isActive && !deliverer.delivered);
     const randomNumber = this.getRandomInt(suitableDeliverers.length);
     this.nextDeliverer = suitableDeliverers[randomNumber];
     this.nextEvent[0].delivererId = this.nextDeliverer.id;

@@ -49,20 +49,20 @@
       <div class="past-events-table-container">
         <mat-card class="table-card">
           <mat-card-title class="generic-title">Toimunud üritused</mat-card-title>
-          <table mat-table [dataSource]="deliveries">
+          <table mat-table [dataSource]="deliveriesDataSource" matSort #deliveriesSort="matSort" matSortActive="date" matSortDirection="desc">
             <ng-container matColumnDef="type">
-              <th mat-header-cell *matHeaderCellDef> SÜNDMUSE TÜÜP</th>
+              <th mat-header-cell *matHeaderCellDef mat-sort-header> SÜNDMUSE TÜÜP</th>
               <td mat-cell *matCellDef="let delivery" [class.paint-delivery-pizza]='isDeliveryPizza(delivery)'
                   [class.paint-team-lunch]='!isDeliveryPizza(delivery)'> {{delivery.type | eventType}} </td>
             </ng-container>
 
             <ng-container matColumnDef="date">
-              <th mat-header-cell *matHeaderCellDef> KUUPÄEV</th>
+              <th mat-header-cell *matHeaderCellDef mat-sort-header> KUUPÄEV</th>
               <td mat-cell *matCellDef="let delivery"> {{delivery.date | date}} </td>
             </ng-container>
 
             <ng-container matColumnDef="restaurant">
-              <th mat-header-cell *matHeaderCellDef> SÖÖGIKOHT</th>
+              <th mat-header-cell *matHeaderCellDef mat-sort-header> SÖÖGIKOHT</th>
               <td mat-cell *matCellDef="let delivery"> {{delivery.restaurant}} </td>
             </ng-container>
 
@@ -79,20 +79,20 @@
       <div class="deliverers-table-container">
         <mat-card class="table-card">
           <mat-card-title class="generic-title">Korraldajad</mat-card-title>
-          <table mat-table [dataSource]="deliverers">
+          <table mat-table [dataSource]="deliverersDataSource" matSort #deliverersSort="matSort" matSortActive="isActive" matSortDirection="desc">
             <ng-container matColumnDef="name">
-              <th mat-header-cell *matHeaderCellDef> NIMI</th>
+              <th mat-header-cell *matHeaderCellDef mat-sort-header> NIMI</th>
               <td mat-cell *matCellDef="let deliverer"> {{deliverer.name}} </td>
             </ng-container>
 
             <ng-container matColumnDef="delivered">
-              <th mat-header-cell *matHeaderCellDef> ON OLNUD DELIVERY MANAGER</th>
+              <th mat-header-cell *matHeaderCellDef mat-sort-header> ON OLNUD DELIVERY MANAGER</th>
               <td mat-cell *matCellDef="let deliverer" [class.paint-green]='deliverer.delivered'
                   [class.paint-red]='!deliverer.delivered'> {{deliverer.delivered | yesNo}} </td>
             </ng-container>
 
             <ng-container matColumnDef="isActive">
-              <th mat-header-cell *matHeaderCellDef> ON AKTIIVNE</th>
+              <th mat-header-cell *matHeaderCellDef mat-sort-header> ON AKTIIVNE</th>
               <td mat-cell *matCellDef="let deliverer" [class.paint-green]='deliverer.isActive'
                   [class.paint-red]='!deliverer.isActive'> {{deliverer.isActive | yesNo}} </td>
             </ng-container>
