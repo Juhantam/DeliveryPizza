@@ -88,14 +88,50 @@
 
             <ng-container matColumnDef="delivered">
               <th mat-header-cell *matHeaderCellDef mat-sort-header> ON OLNUD DELIVERY MANAGER</th>
-              <td mat-cell *matCellDef="let deliverer" [class.paint-green]='deliverer.delivered'
-                  [class.paint-red]='!deliverer.delivered'> {{deliverer.delivered | yesNo}} </td>
+              <td mat-cell *matCellDef="let deliverer">
+                <ng-container *ngIf="editingDelivererId !== deliverer.id; else editDeliveredTpl">
+                  <span [class.paint-green]='deliverer.delivered' [class.paint-red]='!deliverer.delivered'>
+                    {{deliverer.delivered | yesNo}}
+                  </span>
+                </ng-container>
+                <ng-template #editDeliveredTpl>
+                  <mat-select [(ngModel)]="editDelivered" class="edit-select">
+                    <mat-option [value]="true">JAH</mat-option>
+                    <mat-option [value]="false">EI</mat-option>
+                  </mat-select>
+                </ng-template>
+              </td>
             </ng-container>
 
             <ng-container matColumnDef="isActive">
               <th mat-header-cell *matHeaderCellDef mat-sort-header> ON AKTIIVNE</th>
-              <td mat-cell *matCellDef="let deliverer" [class.paint-green]='deliverer.isActive'
-                  [class.paint-red]='!deliverer.isActive'> {{deliverer.isActive | yesNo}} </td>
+              <td mat-cell *matCellDef="let deliverer">
+                <ng-container *ngIf="editingDelivererId !== deliverer.id; else editActiveTpl">
+                  <span [class.paint-green]='deliverer.isActive' [class.paint-red]='!deliverer.isActive'>
+                    {{deliverer.isActive | yesNo}}
+                  </span>
+                </ng-container>
+                <ng-template #editActiveTpl>
+                  <mat-select [(ngModel)]="editIsActive" class="edit-select">
+                    <mat-option [value]="true">JAH</mat-option>
+                    <mat-option [value]="false">EI</mat-option>
+                  </mat-select>
+                </ng-template>
+              </td>
+            </ng-container>
+
+            <ng-container matColumnDef="actions">
+              <th mat-header-cell *matHeaderCellDef></th>
+              <td mat-cell *matCellDef="let deliverer">
+                <button *ngIf="authService.isAuthenticated && editingDelivererId !== deliverer.id"
+                        mat-icon-button (click)="startEditing(deliverer)">
+                  <mat-icon>edit</mat-icon>
+                </button>
+                <button *ngIf="editingDelivererId === deliverer.id"
+                        mat-icon-button color="primary" (click)="saveEditing(deliverer)">
+                  <mat-icon>check</mat-icon>
+                </button>
+              </td>
             </ng-container>
 
             <tr mat-header-row *matHeaderRowDef="delivererColumnsToDisplay"></tr>

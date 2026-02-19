@@ -64,4 +64,8 @@ export class AppService {
   createDeliverer(deliverer: {name: string, delivered: boolean, isActive: boolean}): Observable<any> {
     return this.http.post(`${this.url}/deliverers.json`, deliverer);
   }
+
+  updateDeliverer(id: string, updates: Partial<Deliverer>): Observable<any> {
+    return this.http.patch(`${this.url}/deliverers/${id}.json`, updates);
+  }
 }

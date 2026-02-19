@@ -135,6 +135,10 @@ table {
   color: #e06c75;
 }
 
+.edit-select {
+  width: 80px;
+}
+
 .paint-delivery-pizza {
   color: orange;
 }

@@ -14,7 +14,7 @@ import {AuthService} from "../service/auth.service";
   styleUrl: './home.component.css'
 })
 export class HomeComponent implements OnInit, AfterViewInit, OnDestroy {
-  delivererColumnsToDisplay: string[] = ['name', 'delivered', 'isActive'];
+  delivererColumnsToDisplay: string[] = ['name', 'delivered', 'isActive', 'actions'];
   deliveryColumnsToDisplay: string[] = ['type', 'date', 'restaurant', 'deliverer'];
 
   subscriptions: Subscription[] = [];
@@ -61,6 +61,27 @@ export class HomeComponent implements OnInit, AfterViewInit, OnDestroy {
     this.nextDeliverer = suitableDeliverers[randomNumber];
     this.nextEvent[0].delivererId = this.nextDeliverer.id;
     this.subscriptions.push(this.appService.updateNextEvent(this.nextEvent[0]).subscribe());
+  }
+
+  editingDelivererId: string | null = null;
+  editDelivered: boolean;
+  editIsActive: boolean;
+
+  startEditing(deliverer: Deliverer): void {
+    this.editingDelivererId = deliverer.id;
+    this.editDelivered = deliverer.delivered;
+    this.editIsActive = deliverer.isActive;
+  }
+
+  saveEditing(deliverer: Deliverer): void {
+    this.subscriptions.push(this.appService.updateDeliverer(deliverer.id, {
+      delivered: this.editDelivered,
+      isActive: this.editIsActive
+    }).subscribe(() => {
+      deliverer.delivered = this.editDelivered;
+      deliverer.isActive = this.editIsActive;
+      this.editingDelivererId = null;
+    }));
   }
 
   isDeliveryPizza(delivery: Delivery): boolean {
